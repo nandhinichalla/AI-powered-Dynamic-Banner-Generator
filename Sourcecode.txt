@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Banner Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        #home-page {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Full height for center alignment */
+        }
+        #drop-area, #product-drop-area {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            margin: 20px auto;
+            width: 80%;
+        }
+        #banner {
+            width: 600px;
+            height: 800px;
+            position: relative;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            margin: 20px auto;
+            border: 2px solid #ddd;
+        }
+        #banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+        }
+        .banner-text, .promo-text {
+            position: absolute;
+            color: rgb(18, 15, 15);
+            font-weight: bold;
+            background-color: rgb(253, 254, 255);
+            padding: 20px;
+            cursor: move;
+            user-select: text;
+        }
+        .promo-text {
+            background-color: rgb(255, 255, 255);
+        }
+        .product-image {
+            position: absolute;
+            cursor: move;
+            border: 2px solid #fff; /* Optional: adds a border around product images */
+        }
+        .hidden {
+            display: none;
+        }
+        #start-button {
+            padding: 15px 30px;
+            font-size: 20px;
+            cursor: pointer;
+            margin-top: 20px;
+            background-color: #4CAF50; /* Green */
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        h1 {
+            font-size: 2.5em;
+            color: #333; /* Darker color for better visibility */
+        }
+        p {
+            font-size: 1.2em;
+            color: #666; /* Subtle color for paragraph text */
+        }
+        /* New styles for template and product image selection */
+        #template-selection, #product-image-selection {
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+        }
+        select {
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Home Page -->
+<div id="home-page">
+    <h1>Welcome to the Banner Generator!</h1>
+    <p>Design stunning banners easily by clicking the button below!</p>
+    <button id="start-button">Start</button>
+</div>
+
+<!-- Banner Generator Page -->
+<div id="generator-page" class="hidden">
+    <h1>Dynamic Banner Generator</h1>
+
+    <!-- Template Selection -->
+    <div id="template-selection">
+        <label for="template-select">Select a Template:</label>
+        <select id="template-select">
+            <option value="">Choose a template</option>
+            <option value="template1.jpg">Template 1</option>
+            <option value="template2.jpg">Template 2</option>
+            <option value="template3.jpg">Template 3</option>
+            <!-- Add more templates as needed -->
+        </select>
+        <img id="template-selected-image" class="hidden" alt="Selected Template" style="width: 200px; margin-top: 20px;"/>
+    </div>
+
+    <!-- File upload area for banner background -->
+    <div id="drop-area">
+        <input type="file" id="fileElem" accept="image/*" style="display:none;">
+        <label for="fileElem">Drag and drop banner background here or click to upload</label>
+    </div>
+
+    <!-- File upload area for product images -->
+    <div id="product-drop-area">
+        <input type="file" id="productFileElem" accept="image/*" multiple style="display:none;">
+        <label for="productFileElem">Drag and drop product images here or click to upload</label>
+    </div>
+
+    <!-- Product Image Selection -->
+    <div id="product-image-selection">
+        <label for="product-select">Select Product Image:</label>
+        <select id="product-select">
+            <option value="">Choose a product image</option>
+            <option value="amul butter.png">Product 1</option>
+            <option value="Apple.png">Product 2</option>
+            <option value="Carrot.png">Product 3</option>
+            <option value="Corn.png">Product 4</option>
+            <option value="Kiwi.png">Product 5</option>
+        
+
+            <!-- Add more products as needed -->
+        </select>
+        <img id="product-selected-image" class="hidden" alt="Selected Product" style="width: 200px; margin-top: 20px;"/>
+    </div>
+
+    <!-- Promotional Offer Selection -->
+    <div>
+        <label for="promo-select">Choose a promotional offer:</label>
+        <select id="promo-select">
+            <option value="">Choose a promotional offer</option>
+            <option value="MAX ₹99 OFF">MAX ₹99 OFF</option>
+            <option value="UP TO 60% OFF">UP TO 60% OFF</option>
+            <option value="UNDER ₹999">UNDER ₹999</option>
+            <option value="MIN ₹10 OFF">MIN ₹10 OFF</option>
+            <option value="MIN 20% OFF">MIN 20% OFF</option>
+            <option value="STARTS @₹99">STARTS @₹99</option>
+            <option value="FLAT ₹100 OFF">FLAT ₹100 OFF</option>
+            <option value="FLAT 20% OFF">FLAT 20% OFF</option>
+            <option value="₹499 STORE">₹499 STORE</option>
+            <option value="BUY 2 GET 1 FREE">BUY 2 GET 1 FREE</option>
+        </select>
+    </div>
+
+    <!-- Text input -->
+    <input type="text" id="banner-text-input" placeholder="Enter banner text" />
+
+    <!-- Font style selector -->
+    <select id="font-select">
+        <option value="Arial">Arial</option>
+        <option value="Times New Roman">Times New Roman</option>
+        <option value="Courier New">Courier New</option>
+        <option value="Verdana">Verdana</option>
+        <option value="Georgia">Georgia</option>
+        <option value="Comic Sans MS">Comic Sans MS</option>
+        <option value="Trebuchet MS">Trebuchet MS</option>
+        <option value="Lucida Console">Lucida Console</option>
+        <option value="Impact">Impact</option>
+        <option value="Tahoma">Tahoma</option>
+        <option value="Palatino Linotype">Palatino Linotype</option>
+        <option value="Garamond">Garamond</option>
+        <option value="Bookman">Bookman</option>
+        <option value="Didot">Didot</option>
+        <option value="Copperplate">Copperplate</option>
+        <option value="Brush Script MT">Brush Script MT</option>
+        <option value="Arial Black">Arial Black</option>
+        <option value="Comic Sans MS">Comic Sans MS</option>
+        <option value="Segoe UI">Segoe UI</option>
+    </select>
+
+    <!-- Banner area -->
+    <div id="banner">
+        <img id="banner-image" src="" alt="Banner Background" />
+        <div id="banner-text" class="banner-text" contenteditable="true">Your Text Here</div>
+        <div id="promo-text" class="promo-text" contenteditable="true">Promotional Text Here</div>
+    </div>
+
+    <!-- Save button -->
+    <button id="save-button">Save Banner</button>
+</div>
+
+<script>
+    const startButton = document.getElementById('start-button');
+    const generatorPage = document.getElementById('generator-page');
+    const bannerImage = document.getElementById('banner-image');
+    const templateSelect = document.getElementById('template-select');
+    const productSelect = document.getElementById('product-select');
+    const bannerTextInput = document.getElementById('banner-text-input');
+    const bannerText = document.getElementById('banner-text');
+    const promoText = document.getElementById('promo-text');
+    const promoSelect = document.getElementById('promo-select'); // New promo select element
+    let currentTemplate = '';
+
+    startButton.addEventListener('click', function() {
+        document.getElementById('home-page').style.display = 'none';
+        generatorPage.classList.remove('hidden');
+    });
+
+    const templateSelectedImage = document.getElementById('template-selected-image');
+    const productSelectedImage = document.getElementById('product-selected-image');
+
+    templateSelect.addEventListener('change', function() {
+        currentTemplate = templateSelect.value;
+        if (currentTemplate) {
+            bannerImage.src = currentTemplate; // Set the banner image
+            templateSelectedImage.src = currentTemplate;
+            templateSelectedImage.style.display = 'block';
+        } else {
+            bannerImage.src = '';
+            templateSelectedImage.style.display = 'none';
+        }
+    });
+
+    // Handle the banner background upload
+    const dropArea = document.getElementById('drop-area');
+    dropArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+    });
+    dropArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                bannerImage.src = event.target.result; // Set banner image from uploaded file
+            };
+            reader.readAsDataURL(files[0]);
+        }
+    });
+    dropArea.addEventListener('click', () => {
+        document.getElementById('fileElem').click();
+    });
+    document.getElementById('fileElem').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                bannerImage.src = event.target.result; // Set banner image from uploaded file
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Handle the product image upload
+    const productDropArea = document.getElementById('product-drop-area');
+    productDropArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+    });
+    productDropArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const files = e.dataTransfer.files;
+        for (const file of files) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = document.createElement('img');
+                img.src = event.target.result; // Set product image from uploaded file
+                img.classList.add('product-image');
+                img.draggable = true;
+                img.style.left = ${Math.random() * 100}%;
+                img.style.top = ${Math.random() * 100}%;
+                img.style.width = '200px'; // Set initial width
+                img.style.height = 'auto'; // Maintain aspect ratio
+                img.style.transformOrigin = 'top left'; // Ensure proper resizing
+                document.getElementById('banner').appendChild(img);
+
+                // Make product image draggable
+                img.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', null);
+                    e.target.classList.add('dragging');
+                });
+
+                img.addEventListener('dragend', (e) => {
+                    e.target.classList.remove('dragging');
+                });
+
+                // Allow dragging the product image
+                banner.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                });
+
+                banner.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    const x = e.clientX - banner.getBoundingClientRect().left;
+                    const y = e.clientY - banner.getBoundingClientRect().top;
+
+                    const draggedElement = document.querySelector('.dragging');
+                    if (draggedElement) {
+                        draggedElement.style.left = ${x}px;
+                        draggedElement.style.top = ${y}px;
+                        draggedElement.style.position = 'absolute';
+                    }
+                });
+
+                // Allow resizing the product image
+                img.addEventListener('mousedown', (e) => {
+                    const imgElement = e.target;
+                    const startX = e.clientX;
+                    const startY = e.clientY;
+                    const startWidth = parseInt(window.getComputedStyle(imgElement).width, 10);
+                    const startHeight = parseInt(window.getComputedStyle(imgElement).height, 10);
+
+                    const resize = (e) => {
+                        const newWidth = startWidth + (e.clientX - startX);
+                        const newHeight = startHeight + (e.clientY - startY);
+                        imgElement.style.width = ${newWidth}px;
+                        imgElement.style.height = ${newHeight}px;
+                    };
+
+                    const stopResize = () => {
+                        document.removeEventListener('mousemove', resize);
+                        document.removeEventListener('mouseup', stopResize);
+                    };
+
+                    document.addEventListener('mousemove', resize);
+                    document.addEventListener('mouseup', stopResize);
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+    productDropArea.addEventListener('click', () => {
+        document.getElementById('productFileElem').click();
+    });
+    document.getElementById('productFileElem').addEventListener('change', (e) => {
+        const files = e.target.files;
+        for (const file of files) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = document.createElement('img');
+                img.src = event.target.result; // Set product image from uploaded file
+                img.classList.add('product-image');
+                img.draggable = true;
+                img.style.left = ${Math.random() * 100}%;
+                img.style.top = ${Math.random() * 100}%;
+                img.style.width = '200px'; // Set initial width
+                img.style.height = 'auto'; // Maintain aspect ratio
+                img.style.transformOrigin = 'top left'; // Ensure proper resizing
+                document.getElementById('banner').appendChild(img);
+
+                // Make product image draggable
+                img.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', null);
+                    e.target.classList.add('dragging');
+                });
+
+                img.addEventListener('dragend', (e) => {
+                    e.target.classList.remove('dragging');
+                });
+
+                // Allow dragging the product image
+                banner.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                });
+
+                banner.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    const x = e.clientX - banner.getBoundingClientRect().left;
+                    const y = e.clientY - banner.getBoundingClientRect().top;
+
+                    const draggedElement = document.querySelector('.dragging');
+                    if (draggedElement) {
+                        draggedElement.style.left = ${x}px;
+                        draggedElement.style.top = ${y}px;
+                        draggedElement.style.position = 'absolute';
+                    }
+                });
+
+                // Allow resizing the product image
+                img.addEventListener('mousedown', (e) => {
+                    const imgElement = e.target;
+                    const startX = e.clientX;
+                    const startY = e.clientY;
+                    const startWidth = parseInt(window.getComputedStyle(imgElement).width, 10);
+                    const startHeight = parseInt(window.getComputedStyle(imgElement).height, 10);
+
+                    const resize = (e) => {
+                        const newWidth = startWidth + (e.clientX - startX);
+                        const newHeight = startHeight + (e.clientY - startY);
+                        imgElement.style.width = ${newWidth}px;
+                        imgElement.style.height = ${newHeight}px;
+                    };
+
+                    const stopResize = () => {
+                        document.removeEventListener('mousemove', resize);
+                        document.removeEventListener('mouseup', stopResize);
+                    };
+
+                    document.addEventListener('mousemove', resize);
+                    document.addEventListener('mouseup', stopResize);
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Handle product selection
+    productSelect.addEventListener('change', function() {
+        const selectedProduct = productSelect.value;
+        if (selectedProduct) {
+            const img = document.createElement('img');
+            img.src = selectedProduct; // Assuming the product images are accessible
+            img.classList.add('product-image');
+            img.draggable = true;
+            img.style.left = ${Math.random() * 100}%;
+            img.style.top = ${Math.random() * 100}%;
+            img.style.width = '200px'; // Set initial width
+            img.style.height = 'auto'; // Maintain aspect ratio
+            img.style.transformOrigin = 'top left'; // Ensure proper resizing
+            document.getElementById('banner').appendChild(img);
+
+            // Display the selected product image below the dropdown
+            productSelectedImage.src = selectedProduct;
+            productSelectedImage.style.display = 'block';
+
+            // Make product image draggable
+            img.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', null);
+                e.target.classList.add('dragging');
+            });
+
+            img.addEventListener('dragend', (e) => {
+                e.target.classList.remove('dragging');
+            });
+
+            // Allow dragging the product image
+            banner.addEventListener('dragover', (e) => {
+                e.preventDefault();
+            });
+
+            banner.addEventListener('drop', (e) => {
+                e.preventDefault();
+                const x = e.clientX - banner.getBoundingClientRect().left;
+                const y = e.clientY - banner.getBoundingClientRect().top;
+
+                const draggedElement = document.querySelector('.dragging');
+                if (draggedElement) {
+                    draggedElement.style.left = ${x}px;
+                    draggedElement.style.top = ${y}px;
+                    draggedElement.style.position = 'absolute';
+                }
+            });
+
+            // Allow resizing the product image
+            img.addEventListener('mousedown', (e) => {
+                const imgElement = e.target;
+                const startX = e.clientX;
+                const startY = e.clientY;
+                const startWidth = parseInt(window.getComputedStyle(imgElement).width, 10);
+                const startHeight = parseInt(window.getComputedStyle(imgElement).height, 10);
+
+                const resize = (e) => {
+                    const newWidth = startWidth + (e.clientX - startX);
+                    const newHeight = startHeight + (e.clientY - startY);
+                    imgElement.style.width = ${newWidth}px;
+                    imgElement.style.height = ${newHeight}px;
+                };
+
+                const stopResize = () => {
+                    document.removeEventListener('mousemove', resize);
+                    document.removeEventListener('mouseup', stopResize);
+                };
+
+                document.addEventListener('mousemove', resize);
+                document.addEventListener('mouseup', stopResize);
+            });
+        } else {
+            productSelectedImage.src = '';
+            productSelectedImage.style.display = 'none';
+        }
+    });
+
+    // Handle promotional offer selection
+    promoSelect.addEventListener('change', function() {
+        const selectedPromo = promoSelect.value;
+        if (selectedPromo) {
+            promoText.innerText = selectedPromo; // Update the promo text
+        }
+    });
+
+    // Update the banner text based on input
+    bannerTextInput.addEventListener('input', function() {
+        bannerText.innerText = bannerTextInput.value; // Update the banner text
+    });
+
+    // Handle font selection
+    document.getElementById('font-select').addEventListener('change', function() {
+        bannerText.style.fontFamily = this.value;
+    });
+
+    // Save button functionality
+    document.getElementById('save-button').addEventListener('click', function() {
+        html2canvas(document.querySelector("#banner")).then(canvas => {
+            const link = document.createElement('a');
+            link.download = 'banner.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        });
+    });
+
+    // Make the texts draggable
+    dragElement(bannerText);
+    dragElement(promoText);
+
+    function dragElement(element) {
+        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+        element.onmousedown = dragMouseDown;
+
+        function dragMouseDown(e) {
+            e.preventDefault();
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            document.onmousemove = elementDrag;
+        }
+
+        function elementDrag(e) {
+            e.preventDefault();
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            element.style.top = (element.offsetTop - pos2) + "px";
+            element.style.left = (element.offsetLeft - pos1) + "px";
+        }
+
+        function closeDragElement() {
+            document.onmouseup = null;
+            document.onmousemove = null;
+        }
+    }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+</body>
+</html>
